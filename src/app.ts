@@ -1,5 +1,6 @@
 import express from 'express';
 
+
 const app = express();
 
 app.get('/', (req, res) => {
@@ -7,6 +8,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/predict', (req, res) => {
+    console.log(req.body)
     res.send(req.body)
 })
 
