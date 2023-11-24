@@ -10,10 +10,12 @@ def predict(input_data):
     return prediction.tolist()
 
 
-input_data = sys.stdin.read()
+# input_data = sys.stdin.read()
+temperature = float(sys.argv[1])
+humidity = float(sys.argv[2])
+ph = float(sys.argv[3])
+water = float(sys.argv[4])
+crop = float(sys.argv[5])
 
-data = input_data.split(",")
-fixtures = [float(x) for x in data]
-
-result = predict(fixtures)
-print(result)
+result = predict([temperature, humidity, ph, water, crop])
+print(result[0])
