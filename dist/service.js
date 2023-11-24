@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.makePrediction = void 0;
 const { PythonShell } = require('python-shell');
 async function makePrediction(temperature, humidity, ph, water, crop) {
-    const pythonScriptPath = 'prediction.py';
+    const pythonScriptPath = './prediction.py';
     let predictedSeason;
     const options = {
         mode: 'text',
