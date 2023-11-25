@@ -17,8 +17,8 @@ export async function handlePredictDev(req:Request, res:Response): Promise<Respo
     return res.status(300).send({success:false, message: "Crop not found"})
   }
 
-  const ph :number = 6.7
-  const water :number = 45.4
+  const ph :number = 0
+  const water :number = 0
 
   try{
     return await makePrediction(temperature, humidity, ph, water, CROPS[crop])
