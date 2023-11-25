@@ -1,13 +1,12 @@
 const { PythonShell } = require('python-shell');
+import { CROPS } from "./crop";
 
 
 export async function makePrediction(temperature:number, humidity:number, ph:number, 
-  water:number, crop:number): Promise<string> {
-
+  water:number, crop:string): Promise<string> {
+    console.log(crop)
     const pythonScriptPath = 'prediction.py';
-    let predictedSeason:string
     
-  
     const options = {
         mode: 'text',
         // pythonPath: 'python3', // Modify this to your Python executable path

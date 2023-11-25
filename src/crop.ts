@@ -1,0 +1,15 @@
+export enum CROPS {
+    rice = 1.0,
+    maize = 2.0,
+    chickpea  = 3.0,
+    kidneybeans = 4.0,
+    pigeonpeas = 5.0,
+    mothbeans = 6.0,
+    mungbean = 7.0,
+    blackgram = 8.0,
+    lentil = 9.0,
+    watermelon = 10.0,
+    muskmelon = 11.0,
+    cotton = 12.0,
+    jute = 13.0,
+}
