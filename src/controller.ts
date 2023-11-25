@@ -25,6 +25,11 @@ export async function handlePredictDev(req:Request, res:Response): Promise<Respo
     .then((predictedSeason:string) => {
       return res.send({success:true, 
         data:{
+          temperature,
+          humidity,
+          crop,
+          ph,
+          water,
           season: predictedSeason
         }
       })
@@ -59,6 +64,11 @@ export async function handlePredict(req:Request, res:Response): Promise<Response
     .then((predictedSeason:string) => {
       return res.send({success:true, 
         data:{
+          temperature,
+          humidity,
+          ph,
+          water,
+          crop,
           season: predictedSeason
         }
       })
