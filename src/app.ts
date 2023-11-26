@@ -1,7 +1,7 @@
 import express from 'express';
 var cors = require('cors');
 
-import { handlePredict, handlePredictDev } from './controller';
+import { handlePredict } from './controller';
 
 const app = express();
 
@@ -13,7 +13,5 @@ app.get('/', (req, res) => {
 })
 
 app.post('/predict', handlePredict)
-
-app.post('/predict2', handlePredictDev)
 
 export default app
