@@ -131,14 +131,12 @@ export function getPlanting(harvest:string, crop:string)
   const cropDuration = CROPDURATIONS[crop as keyof typeof CROPDURATIONS]
   let harvestMonths: string[]
   harvestMonths = SeasonMonths[harvest as keyof typeof seasons]
-  
   const harvestMonthAvg: string = harvestMonths[1] 
   
   let plantingMonthIndex = months.indexOf(harvestMonthAvg) - cropDuration
   if(plantingMonthIndex < 1){plantingMonthIndex = 12 + plantingMonthIndex}
   
   const plantingMonth = months[plantingMonthIndex]
-  console.log(plantingMonth)
   for(let [k, v] of Object.entries(SeasonMonths)){
     if(v.indexOf(plantingMonth) >= 0){
       return k

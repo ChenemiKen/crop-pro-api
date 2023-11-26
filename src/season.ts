@@ -2,12 +2,14 @@ export enum seasons {
     winter= "winter", 
     spring= "spring",
     summer= "summer",
-    autumn= "autumn"
+    autumn= "autumn",
+    rainy=  "rainy"
 }
 
 export const SeasonMonths = {
     winter: ["December", "January", "February"],
-    spring: ["March", "April", "May"],
-    summer: ["June", "July", "August"],
-    autumn: ["September", "October", "November"]
+    spring: ["March", "April",],
+    summer: ["July", "August","September"],
+    autumn: ["October", "November"],
+    rainy: ["May", "June", "July"]
 }
