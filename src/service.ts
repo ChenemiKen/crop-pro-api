@@ -1,6 +1,4 @@
 const { PythonShell } = require('python-shell');
-import { CROPS } from "./crop";
-
 
 export async function makePrediction(temperature:number, humidity:number, ph:number, 
   water:number, crop:string): Promise<string> {
@@ -20,4 +18,3 @@ export async function makePrediction(temperature:number, humidity:number, ph:num
     })
 
 }
-

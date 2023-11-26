@@ -1,81 +1,144 @@
 import { Request, Response } from "express";
 import { makePrediction } from "./service";
-import { CROPS } from "./crop";
+import { CROPDURATIONS, CROPS } from "./crop";
+import { SeasonMonths, seasons } from "./season";
 
-export async function handlePredictDev(req:Request, res:Response): Promise<Response>{
+enum countries { NG="NG", ZA="ZA", KE="KE", SD="SD" }
+
+export async function handlePredict(req:Request, res:Response): Promise<Response>{
   const temperature :number = req.body.temperature
   const humidity :number = req.body.humidity
+  const ph :number = req.body.ph
+  const waterAvailability = req.body.waterAvailability
+  const country :countries = req.body.country
+  const location :string = req.body.location
+  let crop = req.body.selectedCrop
 
   if(!temperature || !humidity){
-    return res.status(300).send({success:false, 
+    return res.status(400).send({success:false, 
       message: "temperature and humidity are required"})
   }
 
-  let crop = (req.body.selectedCrop).toLowerCase()
-  console.log(crop)
-  if(!CROPS[crop]){ 
-    return res.status(300).send({success:false, message: "Crop not found"})
+  if(!country){
+    return res.status(400).send({success:false, 
+      message: "country is required"})
   }
 
-  const ph :number = 0
-  const water :number = 0
+  if(!ph || !waterAvailability){
+    return res.status(400).send({success:false, 
+      message: "ph and waterAvailability are required"})
+  }
+
+  crop = crop.toLowerCase()
+  console.log(crop)
+  if(!CROPS[crop]){ 
+    return res.status(400).send({success:false, message: "Crop not found"})
+  }
 
   try{
-    return await makePrediction(temperature, humidity, ph, water, CROPS[crop])
-    .then((predictedSeason:string) => {
+    return await makePrediction(temperature, humidity, ph, waterAvailability, CROPS[crop])
+    .then((harvest:string) => {
       return res.send({success:true, 
         data:{
           temperature,
           humidity,
           crop,
           ph,
-          water,
-          season: predictedSeason
+          waterAvailability,
+          country,
+          location,
+          plantingSeason: getPlanting(harvest, crop),
+          harvestSeason: harvest
         }
       })
     })
   }catch(err){
-    return res.send({success:false, message:"Invalid input data",
+    console.log(err)
+    return res.status(400).send({success:false, message:"Invalid input data",
       data:[]
     })
   }
 }
 
-export async function handlePredict(req:Request, res:Response): Promise<Response>{
+export async function handlePredictDev(req:Request, res:Response): Promise<Response>{
   const temperature :number = req.body.temperature
   const humidity :number = req.body.humidity
+  const ph :number = req.body.ph
+  const waterAvailability = req.body.waterAvailability
+  const country :countries = req.body.country
+  const location :string = req.body.location
+  let crop = req.body.selectedCrop
 
   if(!temperature || !humidity){
-    return res.status(300).send({success:false, 
+    return res.status(400).send({success:false, 
       message: "temperature and humidity are required"})
   }
 
-  let crop = (req.body.selectedCrop).toLowerCase()
-  console.log(crop)
-  if(!CROPS[crop]){ 
-    return res.status(300).send({success:false, message: "Crop not found"})
+  if(!country){
+    return res.status(400).send({success:false, 
+      message: "country is required"})
   }
 
-  const ph :number = 6.7
-  const water :number = 45.4
+  if(!ph || !waterAvailability){
+    return res.status(400).send({success:false, 
+      message: "ph and waterAvailability are required"})
+  }
+
+  crop = crop.toLowerCase()
+  console.log(crop)
+  if(!CROPS[crop]){ 
+    return res.status(400).send({success:false, message: "Crop not found"})
+  }
 
   try{
-    return await makePrediction(temperature, humidity, ph, water, CROPS[crop])
-    .then((predictedSeason:string) => {
+    return await makePrediction(temperature, humidity, ph, waterAvailability, CROPS[crop])
+    .then((harvest:string) => {
       return res.send({success:true, 
         data:{
           temperature,
           humidity,
-          ph,
-          water,
           crop,
-          season: predictedSeason
+          ph,
+          waterAvailability,
+          country,
+          location,
+          plantingSeason: getPlanting(harvest, crop),
+          harvestSeason: harvest,
+          cropDuration: CROPDURATIONS[crop as keyof typeof CROPDURATIONS]
         }
       })
     })
   }catch(err){
-    return res.send({success:false, message:"Invalid input data",
+    console.log(err)
+    return res.status(400).send({success:false, message:"Invalid input data",
       data:[]
     })
   }
+}
+
+const months = [
+  "", "January", "February", "March", 'April', "May", "June", "July",
+  "August", "September", "October", "November", "December"
+]
+
+export function getPlanting(harvest:string, crop:string)
+  :string{
+
+  const cropDuration = CROPDURATIONS[crop as keyof typeof CROPDURATIONS]
+  let harvestMonths: string[]
+  harvestMonths = SeasonMonths[harvest as keyof typeof seasons]
+  
+  const harvestMonthAvg: string = harvestMonths[1] 
+  
+  let plantingMonthIndex = months.indexOf(harvestMonthAvg) - cropDuration
+  if(plantingMonthIndex < 1){plantingMonthIndex = 12 + plantingMonthIndex}
+  
+  const plantingMonth = months[plantingMonthIndex]
+  for(let [k, v] of Object.entries(SeasonMonths)){
+    if(v.indexOf(plantingMonth) > 0){
+      return k
+    }
+  }
+
+  return ""
 }
