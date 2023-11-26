@@ -2,7 +2,6 @@ const { PythonShell } = require('python-shell');
 
 export async function makePrediction(temperature:number, humidity:number, ph:number, 
   water:number, crop:string): Promise<string> {
-    console.log(crop)
     const pythonScriptPath = 'prediction.py';
     
     const options = {
