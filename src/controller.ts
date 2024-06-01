@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { makePrediction } from "./service";
-import { CROPDURATIONS, CROPS } from "./crop";
-import { SeasonMonths, seasons } from "./season";
-import { phRanges, waterAvailabilityRanges } from "./waterph";
+import { makePrediction } from "./predictionService";
+import { CROPDURATIONS, CROPS } from "./models/crop";
+import { SeasonMonths, seasons } from "./models/season";
+import { phRanges, waterAvailabilityRanges } from "./models/waterph";
 
 enum countries { NG="NG", ZA="ZA", KE="KE", SD="SD" }
 
@@ -11,7 +11,7 @@ export async function handlePredict(req:Request, res:Response)
   const temperature :number = req.body.temperature
   const humidity :number = req.body.humidity
   const ph :number = req.body.ph
-  const waterAvailability = req.body.waterAvailability
+  const waterAvailability:number = req.body.waterAvailability
   const country :countries = req.body.country
   const location :string = req.body.location
   let crop = req.body.selectedCrop
