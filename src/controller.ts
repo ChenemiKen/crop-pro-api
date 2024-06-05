@@ -78,8 +78,7 @@ const months = [
   "August", "September", "October", "November", "December"
 ]
 
-export function getPlanting(harvest:string, crop:string)
-  :string{
+export function getPlanting(harvest:string, crop:string) :string{
 
   const cropDuration = CROPDURATIONS[crop as keyof typeof CROPDURATIONS]
   let harvestMonths: string[]
