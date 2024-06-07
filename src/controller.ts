@@ -78,11 +78,14 @@ const months = [
   "August", "September", "October", "November", "December"
 ]
 
-export function getPlanting(harvest:string, crop:string) :string{
+/** Get the appropriate planting season based on the predicted harvest season 
+ * and the crop's duration.
+ */
+export function getPlanting(harvestSeason:string, crop:string) :string{
 
   const cropDuration = CROPDURATIONS[crop as keyof typeof CROPDURATIONS]
   let harvestMonths: string[]
-  harvestMonths = SeasonMonths[harvest as keyof typeof seasons]
+  harvestMonths = SeasonMonths[harvestSeason as keyof typeof seasons]
   const harvestMonthAvg: string = harvestMonths[1] 
   
   let plantingMonthIndex = months.indexOf(harvestMonthAvg) - cropDuration
@@ -100,11 +103,12 @@ export function getPlanting(harvest:string, crop:string) :string{
 
 function checkWaterAvail(crop:string, entry:number): 
   ({waterAvailOk: boolean, minWaterAvail:number, maxWaterAvail:number}){
+
   const cropWaterAvailabilityRange = waterAvailabilityRanges[crop as 
     keyof typeof waterAvailabilityRanges
   ]
 
-  let waterAvailOk: boolean = false
+  let waterAvailOk = false
   if(entry > cropWaterAvailabilityRange.min && 
     entry < cropWaterAvailabilityRange.max){
       waterAvailOk = true

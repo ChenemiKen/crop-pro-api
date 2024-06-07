@@ -1,12 +1,5 @@
-import { describe} from "node:test";
 const request = require("supertest");
 import app from "../src/app";
-
-describe("Base test", () => {
-    test('adds 1 + 2 to equal 3', () => {
-        expect(1+2).toBe(3);
-    });
-})
 
 describe("GET: /", () => {
     it("should return Crop pro", async () => {
@@ -16,8 +9,9 @@ describe("GET: /", () => {
     })
 })
 
-describe("POST: /predict", () => {
+describe("POST: /predict - success", () => {
     it("should return prediction info", async () => {
+        const crop = "rice";
         const response = await request(app).post("/predict")
             .send({
                 "temperature":23,
@@ -25,10 +19,40 @@ describe("POST: /predict", () => {
                 "country": "NG",
                 "ph": 7,
                 "waterAvailability": 78,
-                "selectedCrop": "rice"
+                "selectedCrop": crop
             })
         expect(response.status).toEqual(200)
-        console.log(response.body)
-        expect(response.body).toEqual("Crop pro")
+        expect(response.body.data).toBeDefined()
+        expect(response.body.data.crop).toEqual(crop)
+    })
+})
+
+describe("POST: /predict - fail", () => {
+    it("should fail input validation", async () => {
+        const crop = "rice";
+        const response = await request(app).post("/predict")
+            .send({
+                "temperature":23,
+                "ph": 7,
+                "waterAvailability": 78,
+                "selectedCrop": crop
+            })
+        expect(response.status).toEqual(400)
+        expect(response.body.success).toBeFalsy()
+    })
+})
+
+describe("POST: /predict - fail", () => {
+    it("should fail invalid crop input", async () => {
+        const crop = "unknown";
+        const response = await request(app).post("/predict")
+            .send({
+                "temperature":23,
+                "ph": 7,
+                "waterAvailability": 78,
+                "selectedCrop": crop
+            })
+        expect(response.status).toEqual(400)
+        expect(response.body.success).toBeFalsy()
     })
 })
