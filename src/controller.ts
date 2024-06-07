@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { makePrediction } from "./service";
-import { CROPDURATIONS, CROPS } from "./crop";
-import { SeasonMonths, seasons } from "./season";
-import { phRanges, waterAvailabilityRanges } from "./waterph";
+import { makePrediction } from "./predictionService";
+import { CROPDURATIONS, CROPS } from "./models/crop";
+import { SeasonMonths, seasons } from "./models/season";
+import { phRanges, waterAvailabilityRanges } from "./models/waterph";
 
 enum countries { NG="NG", ZA="ZA", KE="KE", SD="SD" }
 
@@ -11,7 +11,7 @@ export async function handlePredict(req:Request, res:Response)
   const temperature :number = req.body.temperature
   const humidity :number = req.body.humidity
   const ph :number = req.body.ph
-  const waterAvailability = req.body.waterAvailability
+  const waterAvailability:number = req.body.waterAvailability
   const country :countries = req.body.country
   const location :string = req.body.location
   let crop = req.body.selectedCrop
@@ -78,12 +78,14 @@ const months = [
   "August", "September", "October", "November", "December"
 ]
 
-export function getPlanting(harvest:string, crop:string)
-  :string{
+/** Get the appropriate planting season based on the predicted harvest season 
+ * and the crop's duration.
+ */
+export function getPlanting(harvestSeason:string, crop:string) :string{
 
   const cropDuration = CROPDURATIONS[crop as keyof typeof CROPDURATIONS]
   let harvestMonths: string[]
-  harvestMonths = SeasonMonths[harvest as keyof typeof seasons]
+  harvestMonths = SeasonMonths[harvestSeason as keyof typeof seasons]
   const harvestMonthAvg: string = harvestMonths[1] 
   
   let plantingMonthIndex = months.indexOf(harvestMonthAvg) - cropDuration
@@ -101,11 +103,12 @@ export function getPlanting(harvest:string, crop:string)
 
 function checkWaterAvail(crop:string, entry:number): 
   ({waterAvailOk: boolean, minWaterAvail:number, maxWaterAvail:number}){
+
   const cropWaterAvailabilityRange = waterAvailabilityRanges[crop as 
     keyof typeof waterAvailabilityRanges
   ]
 
-  let waterAvailOk: boolean = false
+  let waterAvailOk = false
   if(entry > cropWaterAvailabilityRange.min && 
     entry < cropWaterAvailabilityRange.max){
       waterAvailOk = true
